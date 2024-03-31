@@ -1,8 +1,0 @@
-com.brunorv.commonbase
-com.brunorv.commonbase.config
-com.brunorv.commonbase.controller
-com.brunorv.commonbase.dto.filter
-com.brunorv.commonbase.entity
-com.brunorv.commonbase.exception
-com.brunorv.commonbase.service
-com.brunorv.commonbase.service.conditionshandler
