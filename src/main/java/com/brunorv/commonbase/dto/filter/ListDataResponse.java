@@ -5,13 +5,14 @@ import lombok.Data;
 @Data
 public class ListDataResponse {
     ListFilterDto.Pagination pagination;
+    ListFilterDto.Sorting sorting;
 
     private Object data;
 
     public ListDataResponse() {
     }
 
-    public ListDataResponse(ListFilterDto.Pagination pagination, Object data) {
+    public ListDataResponse(ListFilterDto.Pagination pagination,ListFilterDto.Sorting sorting, Object data) {
         this.pagination = pagination;
         this.data=data;
     }

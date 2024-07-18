@@ -16,6 +16,7 @@ public class FieldFilter {
 
     private String parseableSelect;
     private String databaseField;
+    private String sortingDatabaseField;
 
     public FieldFilter() {
 
@@ -27,6 +28,7 @@ public class FieldFilter {
         this.databaseField=this.table+"."+databaseAttributeName;
         this.responseAttributeName=responseAttributeName;
         this.isForcingGrouping =isForcingGrouping;
+        this.sortingDatabaseField=this.databaseField;
     }
 
 
@@ -36,11 +38,12 @@ public class FieldFilter {
         this.isForcingGrouping =true;
     }
 
-    public FieldFilter(String table,String specialFunction,String databaseField) {
+    public FieldFilter(String table,String specialFunction,String databaseField,String sorting) {
         this.table = table;
         this.parseableSelect = specialFunction;
         this.isForcingGrouping =true;
         this.databaseField=databaseField;
+        this.sortingDatabaseField=sorting;
     }
 
 }

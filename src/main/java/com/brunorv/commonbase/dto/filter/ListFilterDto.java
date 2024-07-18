@@ -17,7 +17,7 @@ public class ListFilterDto {
     @NotNull
     private List<List<Condition>> conditions;
 
-
+    Sorting sorting;
 
     @Data
     public static class Pagination {
@@ -32,5 +32,21 @@ public class ListFilterDto {
         private String field;
         private String operator;
         private Object value;
+    }
+
+    @Data
+    public static class Sorting {
+        private String field;
+        private int order;
+
+
+        public String getField(){
+            return this.field==null?"":this.field;
+        }
+
+        public String getOrderDirection() {
+            return order == 1 ? " ASC " : order == -1 ? " DESC " : "";
+        }
+
     }
 }

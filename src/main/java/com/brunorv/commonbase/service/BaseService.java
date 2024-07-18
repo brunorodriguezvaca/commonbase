@@ -82,7 +82,7 @@ public abstract  class BaseService<Entity,T> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return new ResponseEntity(new ListDataResponse(filterDto.getPagination(),data), HttpStatus.OK).getBody();
+        return new ResponseEntity(new ListDataResponse(filterDto.getPagination(),filterDto.getSorting(),data), HttpStatus.OK).getBody();
     }
 
     protected Map<String, String> getModelConfiguration(ListFilterDto filterDto,List<List<ListFilterDto.Condition>> extraConditions,List<Object> params) throws Exception {
@@ -188,10 +188,15 @@ public abstract  class BaseService<Entity,T> {
 
         select = this.cleanStringBuilder(select);
         groupBy = this.cleanStringBuilder(groupBy);
+
+        FieldFilter fieldFilter= (FieldFilter) fieldsMapping.get(filterDto.getSorting().getField());
+        String sorting=fieldFilter!=null?fieldFilter.getSortingDatabaseField()+" "+filterDto.getSorting().getOrderDirection():"";
+
         resultMapping.put("select",select.toString());
         resultMapping.put("joins",join.toString());
         resultMapping.put("joinsCounter",joinCounter.toString());
         resultMapping.put("where",where.toString());
+        resultMapping.put("orderBy",sorting);
         resultMapping.put("groupBy",groupBy.toString());
         resultMapping.put("base_table",this.baseTable);
         return resultMapping;
@@ -265,12 +270,13 @@ public abstract  class BaseService<Entity,T> {
                     );
         } else {
 
-            baseSql = String.format("SELECT %s \n FROM %s \n %s \n WHERE %s \n GROUP BY %s \n %s",
+            baseSql = String.format("SELECT %s \n FROM %s \n %s \n WHERE %s \n GROUP BY %s \n ORDER BY %s \n %s",
                     queryModelConfiguration.get("select"),
                     queryModelConfiguration.get("base_table"),
                     queryModelConfiguration.get("joins"),
                     queryModelConfiguration.get("where"),
                     queryModelConfiguration.get("groupBy"),
+                    queryModelConfiguration.get("orderBy"),
                     limitClause);
 
         }
@@ -281,6 +287,10 @@ public abstract  class BaseService<Entity,T> {
 
         if (queryModelConfiguration.get("groupBy").isEmpty()){
             baseSql=baseSql.replace("GROUP BY","");
+        }
+
+        if (queryModelConfiguration.get("orderBy").isEmpty()){
+            baseSql=baseSql.replace("ORDER BY","");
         }
 
         return baseSql;
