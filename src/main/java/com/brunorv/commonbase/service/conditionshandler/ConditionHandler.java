@@ -14,7 +14,7 @@ public abstract class ConditionHandler {
     }
 
     protected boolean isValidOperator(String operator) {
-        List<String> validOperators = Arrays.asList("=","!=", "<>", "<", ">", "<=", ">=","in","not in","%like%","like%","%like","between","betweenDate","greaterThanDate","lessThanDate");
+        List<String> validOperators = Arrays.asList("=","!=", "<>", "<", ">", "<=", ">=","in","not in","%like%","like%","%like","between","betweenDate","greaterThanDate","lessThanDate","isNull","isNotNull");
         return validOperators.contains(operator);
     }
 

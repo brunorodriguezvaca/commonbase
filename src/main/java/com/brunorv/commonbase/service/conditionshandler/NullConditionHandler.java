@@ -2,11 +2,14 @@ package com.brunorv.commonbase.service.conditionshandler;
 
 
 
+import java.util.Arrays;
 import java.util.List;
 
 public class NullConditionHandler extends ConditionHandler {
     private ConditionHandler nextHandler;
-
+    public NullConditionHandler(){
+        this.operatorHandler= Arrays.asList("isNull","isNotNull");
+    }
     @Override
     public void handleCondition(StringBuilder where, String field, String operator, Object valueNode, List<Object> params) throws Exception {
 
@@ -14,7 +17,7 @@ public class NullConditionHandler extends ConditionHandler {
             throw new Exception("the operator '"+operator+"' is not supported");
         }
 
-        if (valueNode == null) {
+        if(this.isMyOperator(operator)){
             where.append(field)
                     .append(" ")
                     .append(getParserOperator(valueNode, operator))
@@ -28,15 +31,9 @@ public class NullConditionHandler extends ConditionHandler {
     }
 
     protected String getParserOperator(Object valueNode,String operator) throws Exception {
-
-        if(valueNode==null){
-            if(operator.equals("=")) return "is null";
-            if(operator.equals("!=")) return "is not null";
-            throw new Exception("the operator '"+operator+"' is not supported for the value "+null);
-        }
-
-        return operator;
-
+        if(operator.equals("isNull")) return "is null";
+        if(operator.equals("isNotNull")) return "is not null";
+        throw new Exception("the operator '"+operator+"' is not supported for the value "+null);
     }
 
     @Override
