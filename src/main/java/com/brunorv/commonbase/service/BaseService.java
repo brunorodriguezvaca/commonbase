@@ -7,10 +7,7 @@ import com.brunorv.commonbase.dto.filter.FieldFilter;
 import com.brunorv.commonbase.dto.filter.ListDataResponse;
 import com.brunorv.commonbase.dto.filter.ListFilterDto;
 import com.brunorv.commonbase.exception.FieldsNotFoundException;
-import com.brunorv.commonbase.service.conditionshandler.ArrayConditionHandler;
-import com.brunorv.commonbase.service.conditionshandler.ConditionHandler;
-import com.brunorv.commonbase.service.conditionshandler.NullConditionHandler;
-import com.brunorv.commonbase.service.conditionshandler.PrimitiveDataTypeHandler;
+import com.brunorv.commonbase.service.conditionshandler.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -154,7 +151,7 @@ public abstract  class BaseService<Entity,T> {
         }
 
 
-        if(!fieldsNotFound.isEmpty()) throw new FieldsNotFoundException("There are  no fields at the request", fieldsNotFound);
+        if(!fieldsNotFound.isEmpty()) throw new FieldsNotFoundException("There are  fields not found at the request", fieldsNotFound);
 
 
         for (List<ListFilterDto.Condition> conditionSet : filterDto.getConditions()) {
@@ -247,10 +244,15 @@ public abstract  class BaseService<Entity,T> {
         // PrimitiveDataTypeHandler must be the last element in the chain
         ConditionHandler conditionHandlerChain = new NullConditionHandler();
         ConditionHandler arrayConditionHandlerChain = new ArrayConditionHandler();
+        ConditionHandler likeOperatorHandlerChain = new LikeOperatorHandler();
+        ConditionHandler DateOperatorHandlerChain = new DateOperatorsHandler();
         ConditionHandler primitiveDataConditionHandlerChain = new PrimitiveDataTypeHandler();
 
         //build chain
-        conditionHandlerChain.setNextHandler(arrayConditionHandlerChain).setNextHandler(primitiveDataConditionHandlerChain);
+        conditionHandlerChain.setNextHandler(arrayConditionHandlerChain)
+                .setNextHandler(likeOperatorHandlerChain)
+                .setNextHandler(DateOperatorHandlerChain)
+                .setNextHandler(primitiveDataConditionHandlerChain);
 
         conditionHandlerChain.handleCondition(where, field, operator, valueNode,params);
     }
@@ -326,12 +328,12 @@ public abstract  class BaseService<Entity,T> {
     }
 
     public void loadAuditableFields(Map<String, FieldFilter> fieldsMapping,String tableName){
-        fieldsMapping.put("createdAt", new FieldFilter(tableName, "created_At","created_at",false));
-        fieldsMapping.put("deletedAt", new FieldFilter(tableName, "deleted_At","deleted_at",false));
-        fieldsMapping.put("updatedAt", new FieldFilter(tableName, "updated_At","updated_at",false));
-        fieldsMapping.put("userCreatedAt", new FieldFilter(tableName, "user_created","user_created_at",false));
-        fieldsMapping.put("userUpdatedAt", new FieldFilter(tableName, "user_updated","user_deleted_at",false));
-        fieldsMapping.put("userDeletedAt", new FieldFilter(tableName, "user_deleted","user_updated_at",false));
+        fieldsMapping.put("createdAt", new FieldFilter(tableName, "createdAt","created_at",false));
+        fieldsMapping.put("deletedAt", new FieldFilter(tableName, "deletedAt","deleted_at",false));
+        fieldsMapping.put("updatedAt", new FieldFilter(tableName, "updatedAt","updated_at",false));
+        fieldsMapping.put("userCreatedAt", new FieldFilter(tableName, "userCreated","user_created_at",false));
+        fieldsMapping.put("userUpdatedAt", new FieldFilter(tableName, "userUpdated","user_deleted_at",false));
+        fieldsMapping.put("userDeletedAt", new FieldFilter(tableName, "userDeleted","user_updated_at",false));
     }
 
 

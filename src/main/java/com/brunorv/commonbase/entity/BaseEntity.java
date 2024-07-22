@@ -20,7 +20,6 @@ public abstract class BaseEntity {
     private String id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
     protected Date createdAt;
 
     protected String userCreatedAt;
