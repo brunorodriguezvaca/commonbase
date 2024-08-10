@@ -246,12 +246,14 @@ public abstract  class BaseService<Entity,T> {
         ConditionHandler arrayConditionHandlerChain = new ArrayConditionHandler();
         ConditionHandler likeOperatorHandlerChain = new LikeOperatorHandler();
         ConditionHandler DateOperatorHandlerChain = new DateOperatorsHandler();
+        BetweenOperatorHandler BetweenOperatorHandler = new BetweenOperatorHandler();
         ConditionHandler primitiveDataConditionHandlerChain = new PrimitiveDataTypeHandler();
 
         //build chain
         conditionHandlerChain.setNextHandler(arrayConditionHandlerChain)
                 .setNextHandler(likeOperatorHandlerChain)
                 .setNextHandler(DateOperatorHandlerChain)
+                .setNextHandler(BetweenOperatorHandler)
                 .setNextHandler(primitiveDataConditionHandlerChain);
 
         conditionHandlerChain.handleCondition(where, field, operator, valueNode,params);

@@ -32,9 +32,9 @@ public class ArrayConditionHandler extends ConditionHandler {
         where.append(field)
                 .append(" ")
                 .append(operator)
-                .append(" ( ? ) ");
+                .append(" ("+this.getValues(arrayValues,operator,params)+") ");
 
-        params.add(this.getValues(arrayValues,operator,params));
+        //params.add(this.getValues(arrayValues,operator,params));
 
     }
 
