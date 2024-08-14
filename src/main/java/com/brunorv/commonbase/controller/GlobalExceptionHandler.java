@@ -3,6 +3,7 @@ package com.brunorv.commonbase.controller;
 
 import com.brunorv.commonbase.exception.BussinesExceptionResponse;
 import com.brunorv.commonbase.exception.BussinesRuleException;
+import com.brunorv.commonbase.exception.InvalidFormException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,24 +15,40 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler({InvalidFormException.class})
+    public ResponseEntity<Object> handleInvalidFormExceptions(InvalidFormException ex) {
+        BussinesExceptionResponse bussinesExceptionResponse = new BussinesExceptionResponse(
+                "INVALID-FORM",
+                ex.getMessage(),
+                ex.getErrorResponse()
+        );
+        return ResponseEntity.badRequest().body(bussinesExceptionResponse);
+    }
+
     @ExceptionHandler({ConstraintViolationException.class})
-    public ResponseEntity<Object> handleValidationExceptions(Exception ex) {
+    public ResponseEntity<Object> handleValidationExceptions(ConstraintViolationException ex) {
             Map<String, Object> errorResponse = new HashMap<>();
-            String[] errorArray = ex.getMessage().split(", ");
-            for (String error : errorArray) {
-                String[] dataError = error.split(": ");
-                errorResponse.put(dataError[0], dataError[1]);
-            }
-            return ResponseEntity.badRequest().body(errorResponse);
+        for (ConstraintViolation violation : ex.getConstraintViolations()) {
+            String fullPath = violation.getPropertyPath().toString();
+            String fieldName = fullPath.substring(fullPath.lastIndexOf('.') + 1);
+            errorResponse.put(fieldName, violation.getMessage());
+        }
+
+        BussinesExceptionResponse bussinesExceptionResponse = new BussinesExceptionResponse(
+                "INVALID-FORM",
+                ex.getMessage(),
+                errorResponse
+        );
+
+            return ResponseEntity.badRequest().body(bussinesExceptionResponse);
 
     }
     @ExceptionHandler({HttpMessageNotReadableException.class})

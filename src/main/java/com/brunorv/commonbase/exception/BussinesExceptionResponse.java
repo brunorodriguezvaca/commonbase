@@ -1,25 +1,32 @@
 package com.brunorv.commonbase.exception;
 
+import java.util.Map;
+
 public class BussinesExceptionResponse {
-    private long id;
     private String code;
     private String message;
-    private int status;
+    Map<String, Object> chainOfErrors;
 
-    public BussinesExceptionResponse(long id, String code, String message, int value) {
-        this.id=id;
+    public BussinesExceptionResponse(String code, String message, Map<String, Object> chainErrors) {
         this.code=code;
         this.message=message;
-        this.status=value;
+        this.chainOfErrors =chainErrors;
     }
 
-    public long getId() {
-        return id;
+    public BussinesExceptionResponse(long id, String code, String message, int value) {
+        this.code=code;
+        this.message=message;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public Map<String, Object> getChainOfErrors() {
+        return chainOfErrors;
     }
+
+    public void setChainOfErrors(Map<String, Object> chainOfErrors) {
+        this.chainOfErrors = chainOfErrors;
+    }
+
+
 
     public String getCode() {
         return code;
@@ -37,11 +44,5 @@ public class BussinesExceptionResponse {
         this.message = message;
     }
 
-    public int getStatus() {
-        return status;
-    }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
 }
