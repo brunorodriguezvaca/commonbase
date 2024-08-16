@@ -1,6 +1,7 @@
 package com.brunorv.commonbase.controller;
 
 
+import com.auth0.jwt.exceptions.SignatureGenerationException;
 import com.brunorv.commonbase.exception.BussinesExceptionResponse;
 import com.brunorv.commonbase.exception.BussinesRuleException;
 import com.brunorv.commonbase.exception.InvalidFormException;
@@ -23,12 +24,25 @@ import java.util.*;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+
+    @ExceptionHandler({SignatureGenerationException.class})
+    public ResponseEntity<Object> handleInvalidTokenExceptions(SignatureGenerationException ex) {
+        BussinesExceptionResponse bussinesExceptionResponse = new BussinesExceptionResponse(
+                "INVALID-TOKEN",
+                ex.getMessage(),
+                null,
+                ex.getStackTrace()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(bussinesExceptionResponse);
+    }
+
     @ExceptionHandler({InvalidFormException.class})
     public ResponseEntity<Object> handleInvalidFormExceptions(InvalidFormException ex) {
         BussinesExceptionResponse bussinesExceptionResponse = new BussinesExceptionResponse(
                 "INVALID-FORM",
                 ex.getMessage(),
-                ex.getErrorResponse()
+                ex.getErrorResponse(),
+                ex.getStackTrace()
         );
         return ResponseEntity.badRequest().body(bussinesExceptionResponse);
     }
@@ -45,7 +59,8 @@ public class GlobalExceptionHandler {
         BussinesExceptionResponse bussinesExceptionResponse = new BussinesExceptionResponse(
                 "INVALID-FORM",
                 ex.getMessage(),
-                errorResponse
+                errorResponse,
+                ex.getStackTrace()
         );
 
             return ResponseEntity.badRequest().body(bussinesExceptionResponse);
