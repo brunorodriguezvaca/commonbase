@@ -221,7 +221,7 @@ public abstract  class BaseService<Entity,T> {
                 String field = fieldFilter.getDatabaseField();
                 String operator = innerCondition.getOperator();
                 Object valueNode = innerCondition.getValue();
-                this.appendCondition(where, field, operator, valueNode,params);
+                this.appendCondition(where, field, operator, valueNode,params,fieldFilter);
                 isFirstCondition = false;
             }
 
@@ -240,10 +240,10 @@ public abstract  class BaseService<Entity,T> {
     }
 
 
-    public void appendCondition(StringBuilder where, String field, String operator, Object valueNode,List<Object> params) throws Exception {
+    public void appendCondition(StringBuilder where, String field, String operator, Object valueNode,List<Object> params,FieldFilter fieldFilter) throws Exception {
         // PrimitiveDataTypeHandler must be the last element in the chain
         ConditionHandler conditionHandlerChain = new NullConditionHandler();
-        ConditionHandler arrayConditionHandlerChain = new ArrayConditionHandler();
+        ConditionHandler arrayConditionHandlerChain = new ArrayConditionHandler(fieldFilter);
         ConditionHandler likeOperatorHandlerChain = new LikeOperatorHandler();
         ConditionHandler DateOperatorHandlerChain = new DateOperatorsHandler();
         BetweenOperatorHandler BetweenOperatorHandler = new BetweenOperatorHandler();

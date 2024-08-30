@@ -18,6 +18,13 @@ public class FieldFilter {
     private String databaseField;
     private String sortingDatabaseField;
 
+
+    public boolean isSubQuery;
+    public String subQueryFieldDestiny;
+    public String subQueryField;
+    public String subQuery;
+
+
     public FieldFilter() {
 
     }
@@ -44,6 +51,19 @@ public class FieldFilter {
         this.isForcingGrouping =true;
         this.databaseField=databaseField;
         this.sortingDatabaseField=sorting;
+    }
+
+
+    public FieldFilter(String table,String specialFunction,String databaseField,String sorting,String subQuery,String subQueryFieldDestiny,String subQueryField) {
+        this.table = table;
+        this.parseableSelect = specialFunction;
+        this.isForcingGrouping =true;
+        this.databaseField=databaseField;
+        this.sortingDatabaseField=sorting;
+        this.subQuery=subQuery;
+        this.subQueryFieldDestiny=subQueryFieldDestiny;
+        this.subQueryField=subQueryField;
+        this.isSubQuery=true;
     }
 
 }
