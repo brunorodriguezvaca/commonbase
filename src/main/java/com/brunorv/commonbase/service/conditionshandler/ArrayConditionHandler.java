@@ -20,8 +20,22 @@ public class ArrayConditionHandler extends ConditionHandler {
             throw new Exception("the operator '"+operator+"' is not supported");
         }
 
+
         if (valueNode instanceof List) {
-            handleArrayCondition(where, field, operator, (List<String>) valueNode, params);
+            List<?> list = (List<?>) valueNode;
+            if(list.isEmpty()){
+                throw new Exception("the list of values must not be empty");
+            }
+
+
+            if ( list.get(0) instanceof String) {
+                handleArrayCondition(where, field, operator, (List<String>) valueNode, params);
+            }
+
+            if ( list.get(0) instanceof Boolean) {
+                handleArrayBooleanCondition(where, field, operator, (List<Boolean>) valueNode, params);
+            }
+
             return;
         }
 
@@ -30,11 +44,16 @@ public class ArrayConditionHandler extends ConditionHandler {
         }
     }
 
-    private void handleArrayCondition(StringBuilder where, String field, String operator, List<String> arrayValues, List<Object> params) throws Exception {
+    private void handleArrayBooleanCondition(StringBuilder where, String field, String operator, List<Boolean> arrayValues, List<Object> params) throws Exception {
+        where.append(field)
+                .append(" ")
+                .append(operator)
+                .append(" ("+this.getBooleanValues(arrayValues,operator,params)+") ");
+    }
 
-       if(arrayValues.isEmpty()){
-           throw new Exception("the list of values must not be empty");
-       }
+  private void handleArrayCondition(StringBuilder where, String field, String operator, List<String> arrayValues, List<Object> params) throws Exception {
+
+
 
 
        if(this.fieldFilter.isSubQuery){
@@ -53,6 +72,29 @@ public class ArrayConditionHandler extends ConditionHandler {
                 .append(" ")
                 .append(operator)
                 .append(" ("+this.getValues(arrayValues,operator,params)+") ");
+
+
+    }
+
+    protected String getBooleanValues(List<Boolean> arrayValues, String operator, List<Object> params) throws Exception {
+
+        StringBuilder arrayString = new StringBuilder();
+
+        for (int i = 0; i < arrayValues.size(); i++) {
+            if (arrayValues.get(i) instanceof Boolean) {
+                arrayString.append(arrayValues.get(i));
+            }else{
+                arrayString.append(arrayValues.get(i));
+            }
+
+            if(arrayValues.size()>1 && i+1<arrayValues.size()){
+                arrayString.append(",");
+            }
+
+        }
+
+        return arrayString.toString();
+
 
 
     }
