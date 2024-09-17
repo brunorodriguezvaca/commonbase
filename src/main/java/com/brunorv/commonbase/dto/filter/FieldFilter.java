@@ -4,19 +4,19 @@ import lombok.Data;
 
 @Data
 public class FieldFilter {
-    private String table;
-    private String databaseAttributeName;
-    private String responseAttributeName;
+    protected String table;
+    protected String databaseAttributeName;
+    protected String responseAttributeName;
 
-    private String joinTableName;
+    protected String joinTableName;
 
 
 
-    private boolean isForcingGrouping;
+    protected boolean isForcingGrouping;
 
-    private String parseableSelect;
-    private String databaseField;
-    private String sortingDatabaseField;
+    protected String parseableSelect;
+    protected String databaseField;
+    protected String sortingDatabaseField;
 
 
     public boolean isSubQuery;
@@ -43,14 +43,6 @@ public class FieldFilter {
         this.table = table;
         this.parseableSelect = specialFunction;
         this.isForcingGrouping =true;
-    }
-
-    public FieldFilter(String table,String specialFunction,String databaseField,String sorting) {
-        this.table = table;
-        this.parseableSelect = specialFunction;
-        this.isForcingGrouping =true;
-        this.databaseField=databaseField;
-        this.sortingDatabaseField=sorting;
     }
 
 
