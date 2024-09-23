@@ -274,7 +274,7 @@ public abstract  class BaseService<Entity,T> {
                     );
         } else {
 
-            baseSql = String.format("SELECT %s \n FROM %s \n %s \n WHERE %s \n GROUP BY %s \n ORDER BY %s \n %s",
+            baseSql = String.format("SELECT "+this.distinctActivated+" "+ " %s \n FROM %s \n %s \n WHERE %s \n GROUP BY %s \n ORDER BY %s \n %s",
                     queryModelConfiguration.get("select"),
                     queryModelConfiguration.get("base_table"),
                     queryModelConfiguration.get("joins"),
