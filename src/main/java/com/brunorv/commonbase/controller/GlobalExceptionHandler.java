@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.*;
@@ -95,6 +96,14 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleBussinesRuleException(EntityNotFoundException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+      //  errorResponse.put("stackTraceElements", ex.getStackTrace());
+        errorResponse.put("error", ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(BussinesRuleException.class)
     public ResponseEntity<Object> handleBussinesRuleException(BussinesRuleException ex) {
         BussinesExceptionResponse errorResponse = new BussinesExceptionResponse(
@@ -106,6 +115,8 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, ex.getHttpStatus());
     }
+
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {

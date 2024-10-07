@@ -1,8 +1,5 @@
 package com.brunorv.commonbase.entity;
 
-
-
-import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 

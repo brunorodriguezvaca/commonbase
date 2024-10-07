@@ -316,7 +316,7 @@ public abstract  class BaseService<Entity,T> {
        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
        String bearerToken=request.getHeader("Authorization");
 
-        String keycloakBaseUrl = this.baseUri + "/users/user-by-token";
+        String keycloakBaseUrl = this.baseUri + "/auth/users/user-by-token";
         Map data= apiRequest(
                 keycloakBaseUrl,
                 HttpMethod.GET,
